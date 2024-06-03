@@ -1,5 +1,5 @@
-
-
+//FARMFLOW V 1.0.0
+//ESP32/ESP8266 CODE TO SEND AND FETCH DATA FROM FIREBASE FOR ADVANCED IRRIGATION
 
 #include <Arduino.h>
 
@@ -60,6 +60,7 @@ String databasePath;
 String tempPath = "/temperature";
 String humPath = "/humidity";
 String moisturePath = "/moisture";
+String pumpstatePath = "/pumpstate";
 String timePath = "/timestamp";
 
 // Parent Node (to be updated in every loop)
@@ -75,6 +76,13 @@ NTPClient timeClient(ntpUDP);
 
 // Variable to save current epoch time
 String timestamp;
+
+
+// Days of the week
+const char* daysOfTheWeek[] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+
+
+String pumpstate;
 int irrigation_state;
 
 
@@ -102,12 +110,15 @@ void initWiFi() {
   Serial.println();
 }
 
+/*
 // Function that gets current epoch time
 unsigned long getTime() {
   timeClient.update();
   unsigned long now = timeClient.getEpochTime();
   return now;
 }
+
+*/
 
 void setup(){
   Serial.begin(115200);
@@ -185,15 +196,19 @@ void sendData()
     sendDataPrevMillis = millis();
 
     //Get current timestamp
+    timeClient.update();
+    int dayIndex = timeClient.getDay(); // Assuming this returns a value from 0 to 6
+    //formated time hr:min:sec
     timestamp = timeClient.getFormattedTime();
     Serial.print ("time: ");
     Serial.println (timestamp);
 
-    parentPath= databasePath + "/" + String(timeClient.getDay());
+    parentPath= databasePath + "/" + String(daysOfTheWeek[dayIndex]) + ": " + timestamp;
 
     json.set(tempPath.c_str(), String(h));
     json.set(humPath.c_str(), String(t));
     json.set(moisturePath.c_str(), String(moisture_data));
+    json.set(pumpstatePath.c_str(), String(pumpstate));
     json.set(timePath, String(timestamp));
     Serial.printf("Set json... %s\n", Firebase.RTDB.setJSON(&fbdo, parentPath.c_str(), &json) ? "ok" : fbdo.errorReason().c_str());
   }
@@ -242,15 +257,17 @@ void actuation()
       digitalWrite(LED_RED, LOW);
       digitalWrite(RELAY, HIGH);
       //analogWrite(servo,180);
+      pumpstate = "on";
     }
 
 
-  else if (moisture_data > 21  || irrigation_state == 0)
+  else
   {
     digitalWrite(LED_GREEN, HIGH);
     digitalWrite(LED_RED, LOW);
     digitalWrite(RELAY, HIGH);
     //analogWrite(servo,180);
+    pumpstate = "off";
   }
     
 }
@@ -262,6 +279,6 @@ void loop(){
 
   sendData();
   readData();
-  actuation()
+  actuation();
   
 }
