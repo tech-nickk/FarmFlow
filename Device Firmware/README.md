@@ -5,7 +5,7 @@
 - The following libraries installed in your Arduino IDE:
   - [Firebase_ESP_Client](https://github.com/mobizt/Firebase-ESP-Client/archive/refs/tags/v4.4.14.zip) 
   - [NTPClient](https://github.com/arduino-libraries/NTPClient) 
-  - [DHT](https://github.com/adafruit/DHT-sensor-library)
+  - [Adafruit DHT Sensor](https://github.com/adafruit/DHT-sensor-library)
 
 
 
