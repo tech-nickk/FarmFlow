@@ -26,7 +26,7 @@
 #define WIFI_PASSWORD "password"
 
 // Insert Firebase project API Key
-#define API_KEY "AIzaSyDNiVIY3EyV_oH-a7PWE732M8BEmDkqQGo"
+#define API_KEY "YOUR API KEY"
 
 // Insert Authorized Email and Corresponding Password
 #define USER_EMAIL "farmflow@test.com"
