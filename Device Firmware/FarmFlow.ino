@@ -11,6 +11,7 @@
 
 #include <Firebase_ESP_Client.h>
 #include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
 #include <NTPClient.h>
@@ -22,11 +23,11 @@
 #include "addons/RTDBHelper.h"
 
 // Insert your network credentials
-#define WIFI_SSID "NICK"
-#define WIFI_PASSWORD "password"
+#define WIFI_SSID "nicK"
+#define WIFI_PASSWORD "kipnick56"
 
 // Insert Firebase project API Key
-#define API_KEY "YOUR API KEY"
+#define API_KEY "AIzaSyDNiVIY3EyV_oH-a7PWE732M8BEmDkqQGo"
 
 // Insert Authorized Email and Corresponding Password
 #define USER_EMAIL "farmflow@test.com"
@@ -45,6 +46,8 @@
 
 #define DHTTYPE    DHT11     // DHT 11
 
+//Display
+LiquidCrystal_I2C lcd(0x27,  16, 2);
 
 // Define Firebase objects
 FirebaseData fbdo;
@@ -123,6 +126,11 @@ unsigned long getTime() {
 void setup(){
   Serial.begin(115200);
 
+  //initialize lcd screen
+  lcd.init();
+  // turn on the backlight
+  lcd.backlight();
+
   // Initialize DHT11 sensor
   dht.begin();
   initWiFi();
@@ -183,6 +191,30 @@ void readMoisture()
   moisture_data = analogRead(moisture_sensor);
 }
 
+void displayData()
+{
+    //wait  for a second
+ // delay(1000);
+  // tell the screen to write on the top row
+  lcd.setCursor(0,0);
+
+  lcd.print("Temp:");
+  lcd.print(t);
+  
+  lcd.print("  H20:");
+  lcd.print(moisture_data);
+   
+  // tell the screen to write on the bottom  row
+  lcd.setCursor(0,1);
+  
+
+  lcd.print("Hum:");
+  lcd.print(h);
+  lcd.print("%");
+
+  lcd.print(" Pump:");
+  lcd.print(pumpstate);
+}
 
 
   //SEND DATA TO FIREBASE
@@ -272,13 +304,12 @@ void actuation()
     
 }
 
-
-
 //CODE TO RUN CONTINUOUSLY
 void loop(){
 
-  sendData();
   readData();
+  sendData();
+  displayData();
   actuation();
   
 }
