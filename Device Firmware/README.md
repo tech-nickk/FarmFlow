@@ -2,10 +2,15 @@
 
 
 - Arduino IDE installed on your computer. You can download it from [here](https://www.arduino.cc/en/software).
+- You need to have ESP32 or ESP8266 Board in Arduino IDE if you are using either of them
+    -[How to install ESP32](https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/)
+    -[How to install ESP8266](https://randomnerdtutorials.com/how-to-install-esp8266-board-arduino-ide/)
+
 - The following libraries installed in your Arduino IDE:
-  - [Firebase_ESP_Client](https://github.com/mobizt/Firebase-ESP-Client/archive/refs/tags/v4.4.14.zip) 
+  - [Firebase_ESP_Client](https://github.com/mobizt/Firebase-ESP-Client/archive/refs/tags/v4.4.14.zip)
   - [NTPClient](https://github.com/arduino-libraries/NTPClient) 
   - [Adafruit DHT Sensor](https://github.com/adafruit/DHT-sensor-library)
+  - [LiquidCrystal_I2C](https://downloads.arduino.cc/libraries/github.com/johnrickman/LiquidCrystal_I2C-1.1.2.zip)
 
 
 
