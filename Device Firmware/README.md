@@ -2,7 +2,7 @@
 
 
 - Arduino IDE installed on your computer. You can download it from [here](https://www.arduino.cc/en/software).
-- You need to have ESP32 or ESP8266 Board in Arduino IDE if you are using either of them
+- You need to have ESP32 or ESP8266 Board in Arduino IDE if you are using either of them:
   -[How to install ESP32](https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/)
   -[How to install ESP8266](https://randomnerdtutorials.com/how-to-install-esp8266-board-arduino-ide/)
 
