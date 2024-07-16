@@ -23,25 +23,25 @@
 #include "addons/RTDBHelper.h"
 
 // Insert your network credentials
-#define WIFI_SSID "nicK"
-#define WIFI_PASSWORD "kipnick56"
+#define WIFI_SSID "*********"
+#define WIFI_PASSWORD "*************"
 
 // Insert Firebase project API Key
-#define API_KEY "AIzaSyDNiVIY3EyV_oH-a7PWE732M8BEmDkqQGo"
+#define API_KEY "**********************"
 
 // Insert Authorized Email and Corresponding Password
 #define USER_EMAIL "farmflow@test.com"
 #define USER_PASSWORD "farmflow001"
 
 // Insert RTDB URLefine the RTDB URL
-#define DATABASE_URL "https://farmflow-5403c-default-rtdb.firebaseio.com"
+#define DATABASE_URL "**********************"
 
 
 //PINS
-#define DHTPIN 2 
+#define DHTPIN D2 
 #define moisture_sensor A0 
 #define LED_GREEN D1
-#define LED_RED D2
+#define LED_RED D5
 #define RELAY D3
 
 #define DHTTYPE    DHT11     // DHT 11
@@ -65,6 +65,7 @@ String humPath = "/humidity";
 String moisturePath = "/moisture";
 String pumpstatePath = "/pumpstate";
 String timePath = "/timestamp";
+String actuationsPath ;
 
 // Parent Node (to be updated in every loop)
 String parentPath;
@@ -86,7 +87,7 @@ const char* daysOfTheWeek[] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thur
 
 
 String pumpstate;
-int irrigation_state;
+String irrigation_state;
 
 
 //DHT SENSOR
@@ -125,6 +126,10 @@ unsigned long getTime() {
 
 void setup(){
   Serial.begin(115200);
+
+  pinMode(LED_GREEN, OUTPUT);
+  pinMode(LED_RED, OUTPUT);
+  pinMode(RELAY, OUTPUT);
 
   //initialize lcd screen
   lcd.init();
@@ -217,13 +222,13 @@ void displayData()
 }
 
 
-  //SEND DATA TO FIREBASE
-void sendData()
+  //READ AND WRITE DATA TO FIREBASE
+void read_write_Data()
 {
   readDHT();
   readMoisture();
 
-  // Send new readings to database
+  // WRITE/SEND DATA TO FIREBASE
   if (Firebase.ready() && (millis() - sendDataPrevMillis > timerDelay || sendDataPrevMillis == 0)){
     sendDataPrevMillis = millis();
 
@@ -242,48 +247,33 @@ void sendData()
     json.set(moisturePath.c_str(), String(moisture_data));
     json.set(pumpstatePath.c_str(), String(pumpstate));
     json.set(timePath, String(timestamp));
+    //Firebase.RTDB.setInt(&fbdo, "test/int", count)
     Serial.printf("Set json... %s\n", Firebase.RTDB.setJSON(&fbdo, parentPath.c_str(), &json) ? "ok" : fbdo.errorReason().c_str());
   }
-}
+
 
   //READ DATA FROM FIREBASE
-void readData()
-{
-
-    //Reading Irrigation State
-   if (Firebase.ready() && (millis() - sendDataPrevMillis > 15000 || sendDataPrevMillis == 0)) {
-    sendDataPrevMillis = millis();
-    if (Firebase.RTDB.getInt(&fbdo, parentPath +"/irrigation_state")) {
-      if (fbdo.dataType() == "int") {
-        irrigation_state = fbdo.intData();
+  if (Firebase.RTDB.getString(&fbdo, "/UsersData/" + uid + "/actuations"+"/pumpstate")) {
+      if (fbdo.dataType() == "string") {
+        irrigation_state = fbdo.stringData();
         Serial.println(irrigation_state);
       }
     }
     else {
+      Serial.print("cant read ");
       Serial.println(fbdo.errorReason());
     }
-    
-    /*
-    if (Firebase.RTDB.getFloat(&fbdo, "/test/float")) {
-      if (fbdo.dataType() == "float") {
-        floatValue = fbdo.floatData();
-        Serial.println(floatValue);
-      }
-    }
-    else {
-      Serial.println(fbdo.errorReason());
-    }
-    */
 
 
-  }
 }
+
+
 
 //ACTUATE PUMP, LEDS AND DISPLAY
 void actuation()
 {
       //MOISTURE IS LESS OR IRRIGATION TRIGGERED FROM APP
-  if (moisture_data < 21  || irrigation_state == 1)
+  if (moisture_data < 21  || irrigation_state == "on")
     { 
       digitalWrite(LED_GREEN, HIGH);
       digitalWrite(LED_RED, LOW);
@@ -307,9 +297,9 @@ void actuation()
 //CODE TO RUN CONTINUOUSLY
 void loop(){
 
-  readData();
-  sendData();
-  displayData();
+  read_write_Data();
   actuation();
+  //readData();
+  displayData();
   
 }
