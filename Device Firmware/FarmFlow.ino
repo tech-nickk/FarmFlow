@@ -23,18 +23,18 @@
 #include "addons/RTDBHelper.h"
 
 // Insert your network credentials
-#define WIFI_SSID "*********"
-#define WIFI_PASSWORD "*************"
+#define WIFI_SSID "REPLACE_WITH_WIFI_SSID "
+#define WIFI_PASSWORD "REPLACE_WITH_WIFI_PASSWORD"
 
 // Insert Firebase project API Key
-#define API_KEY "**********************"
+#define API_KEY "REPLACE_WITH_API_KEY "
 
 // Insert Authorized Email and Corresponding Password
-#define USER_EMAIL "farmflow@test.com"
-#define USER_PASSWORD "farmflow001"
+#define USER_EMAIL "USER_PASSWORD"
+#define USER_PASSWORD "REPLACE_WITH_USER_PASSWORD"
 
 // Insert RTDB URLefine the RTDB URL
-#define DATABASE_URL "**********************"
+#define DATABASE_URL "REPLACE_WITH_YOUR_DATABASE_URL"
 
 
 //PINS
