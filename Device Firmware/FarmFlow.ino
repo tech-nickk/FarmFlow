@@ -287,7 +287,7 @@ void actuation()
   {
     digitalWrite(LED_GREEN, HIGH);
     digitalWrite(LED_RED, LOW);
-    digitalWrite(RELAY, HIGH);
+    digitalWrite(RELAY, LOW);
     //analogWrite(servo,180);
     pumpstate = "off";
   }
