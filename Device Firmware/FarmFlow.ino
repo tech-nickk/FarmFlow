@@ -16,7 +16,7 @@
 #include <DHT.h>
 #include <NTPClient.h>
 #include <WiFiUdp.h>
-
+#include <Servo.h> //for servo
 // Provide the token generation process info.
 #include "addons/TokenHelper.h"
 // Provide the RTDB payload printing info and other helper functions.
@@ -93,6 +93,9 @@ String irrigation_state;
 //DHT SENSOR
 DHT dht(DHTPIN, DHTTYPE);
 
+//SERVO OBJECT
+Servo myservo;
+
 float h;
 float t;
 int moisture_data;
@@ -127,6 +130,8 @@ unsigned long getTime() {
 void setup(){
   Serial.begin(115200);
 
+  myservo.attach(D5);  // attaches the servo on D5 to the servo object
+  
   pinMode(LED_GREEN, OUTPUT);
   pinMode(LED_RED, OUTPUT);
   pinMode(RELAY, OUTPUT);
@@ -242,8 +247,8 @@ void read_write_Data()
 
     parentPath= databasePath + "/" + String(daysOfTheWeek[dayIndex]) + ": " + timestamp;
 
-    json.set(tempPath.c_str(), String(h));
-    json.set(humPath.c_str(), String(t));
+    json.set(tempPath.c_str(), String(t));
+    json.set(humPath.c_str(), String(h));
     json.set(moisturePath.c_str(), String(moisture_data));
     json.set(pumpstatePath.c_str(), String(pumpstate));
     json.set(timePath, String(timestamp));
@@ -278,7 +283,7 @@ void actuation()
       digitalWrite(LED_GREEN, HIGH);
       digitalWrite(LED_RED, LOW);
       digitalWrite(RELAY, HIGH);
-      //analogWrite(servo,180);
+      myservo.write(180);
       pumpstate = "on";
     }
 
@@ -288,7 +293,7 @@ void actuation()
     digitalWrite(LED_GREEN, HIGH);
     digitalWrite(LED_RED, LOW);
     digitalWrite(RELAY, LOW);
-    //analogWrite(servo,180);
+    myservo.write(0);
     pumpstate = "off";
   }
     
